@@ -2,7 +2,7 @@ version: "1.0"
 services:
   organization:
 #    image: organization-service
-    build: ./organization-service
+    build: ./organizations-service
     ports:
       - "8083:8083"
     networks:
@@ -14,7 +14,7 @@ services:
 
   site:
 #    image: site-service
-    build: ./site-service
+    build: ./sites-service
     ports:
       - "8082:8082"
     networks:
@@ -25,7 +25,7 @@ services:
  
   user:
 #    image: user-service
-    build: ./user-service
+    build: ./users-service
     ports:
       - "8081:8081"
     networks:

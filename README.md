@@ -7,8 +7,6 @@ Creación de múltiples microservicios con Spring Boot e implementación y ejecu
 * [Arquitectura](#Arquitectura)
 * [Tecnologias](#Tecnologias)
 * [Pre-requisitos](#Prerequisitos)
-* [About me](#about-me)
-* [Acknowledgments](#acknowledgments)
 
 ## Arquitectura
 
@@ -67,7 +65,7 @@ copy ./target/users-service-0.0.1-SNAPSHOT.jar user-service.jar
 CMD ["java","-jar","user-service.jar"]
 ```
 
-**Step 3.** Crear [docker-compose.yml](docker-compose.yml) :
+**Paso 3.** Crear [docker-compose.yml](docker-compose.yml) :
 
 ```bash
 version: "1.0"
@@ -152,7 +150,7 @@ Puedes ver -
 - Construcción de contenedores (usuario, sitio, organización) usando las imágenes.
 - Inicio de los servicios (usuario, sitio, organización).
 
-4. **Consulta las imágenes creadas**
+1. **Consulta las imágenes creadas**
 
    Use el siguiente comando para verificar las imágenes creadas:
 
@@ -162,14 +160,14 @@ Puedes ver -
 
    ![created images](images/docker-images.png)
 
-5. **consulte los containers creados**
+2. **consulte los containers creados**
 
    ```bash
    docker ps -a
    ```
    ![User, Site, Organization, and MySql are UP and RUNNING](images/docker-ps-a.png)
 
-6. **revise logs**
+3. **revise logs**
 
    ```bash
    docker container logs CONTAINER_ID
@@ -208,7 +206,6 @@ organización en
 
 ## Ejemplos
 
-CURL GET command samples for different (User, Site, Organization) microservices:
 
 ### User APIs
 
