@@ -7,6 +7,7 @@ Creación de múltiples microservicios con Spring Boot e implementación y ejecu
 * [Arquitectura](#Arquitectura)
 * [Tecnologias](#Tecnologias)
 * [Pre-requisitos](#Prerequisitos)
+* [Jenkins](#Jenkins)
 
 ## Arquitectura
 
@@ -172,7 +173,70 @@ Puedes ver -
    ```bash
    docker container logs CONTAINER_ID
    ```
+   
+### Jenkins
+se utiliza la imagen de jenkins recomendada en docker hub, installando maven y gradle como gestor de depencias
 
+ ```bash
+   FROM jenkins/jenkins
+USER root
+#Define variables
+ENV MAVEN_VERSION 3.9.2
+
+#Update Base OS and install additional tools
+RUN apt-get update && apt-get install -y wget
+RUN  wget --no-verbose https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz -P /tmp/
+RUN tar xzf /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz -C /opt/ 
+RUN ln -s  /opt/apache-maven-$MAVEN_VERSION /opt/maven 
+RUN ln -s /opt/maven/bin/mvn /usr/local/bin 
+RUN rm /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz 
+
+# gradle version
+ENV GRADLE_VERSION 2.11
+
+# Install gradle, cd to /var/jenkins_home
+WORKDIR  /usr/bin
+
+RUN  curl -sLO https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip && \
+     unzip gradle-${GRADLE_VERSION}-all.zip && \
+     ln -s gradle-${GRADLE_VERSION} gradle && \
+     rm gradle-${GRADLE_VERSION}-all.zip
+
+ENV  GRADLE_HOME /usr/bin/gradle
+ENV  PATH $PATH:$GRADLE_HOME/bin
+#Set up permissions
+RUN chown jenkins:jenkins /opt/maven;
+ENV MAVEN_HOME=/opt/mvn
+USER jenkins
+   ```
+
+Se procede la configracion de contraseñas y usuarios
+
+![jenkins-users.png](jenkins%2Fjenkins-users.png)
+
+![config-instance.png](jenkins%2Fconfig-instance.png)
+
+damos en crear jobs
+
+![create-jobs.png](jenkins%2Fcreate-jobs.png)
+
+Asignamos un nombre y seleccionamos "Crear proyecto de estilo libre" 
+![type-pipeline.png](jenkins%2Ftype-pipeline.png)
+
+Se debe configurar el origen del código fuente
+
+![origen-repo.png](jenkins%2Forigen-repo.png)
+
+Build Steps
+Ejecutar tareas 'maven' de nivel superior
+
+![ejecutar-tareas.png](jenkins%2Fejecutar-tareas.png)
+
+se ejecuta la tarea
+![construir-ahora.png](jenkins%2Fconstruir-ahora.png)
+
+para revisar el proceso correctamente y se pode revisar logs en la opción console logs
+![logs.png](jenkins%2Flogs.png)
 ### Running
 
 Para acceder a los servicios utilice los siguientes endpoint
@@ -203,6 +267,9 @@ organización en
     * http://localhost:8081/api/users
     * http://localhost:8081/api/sites
     * http://localhost:8081/api/organizations
+
+
+
 
 ## Ejemplos
 
