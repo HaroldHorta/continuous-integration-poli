@@ -276,6 +276,14 @@ Constrimos la imagen a partir del repositorio de github
 Se valida la imagen creada
 ![validateDockerHub.png](jenkins%2FvalidateDockerHub.png)
 
+Se repite el proceso para los otros microservicios 
+
+![complete-jenkisn.png](jenkins%2Fcomplete-jenkisn.png)
+
+![img.png](jenkins/validatecompletedockerhub.png)
+
+https://hub.docker.com/repositories/haroldhorta10
+
 ### Running
 
 Para acceder a los servicios utilice los siguientes endpoint
