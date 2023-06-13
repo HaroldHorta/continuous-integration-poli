@@ -8,6 +8,7 @@ Creación de múltiples microservicios con Spring Boot e implementación y ejecu
 * [Tecnologias](#Tecnologias)
 * [Pre-requisitos](#Prerequisitos)
 * [Jenkins](#Jenkins)
+* [Push imagen docker hub con Jenkins](#PushImagen)
 
 ## Arquitectura
 
@@ -61,9 +62,16 @@ Vaya al directorio de cada proyecto Spring Boot y cree un Dockerfile:
 Ejemplos Dockerfile
 
 ```bash
-From openjdk:8
-copy ./target/users-service-0.0.1-SNAPSHOT.jar user-service.jar
-CMD ["java","-jar","user-service.jar"]
+FROM openjdk:8-jdk-alpine
+RUN addgroup -S devopsc && adduser -S javams -G devopsc
+USER javams:devopsc
+ENV JAVA_OPTS=""
+ARG JAR_FILE
+ADD ${JAR_FILE} app.jar
+ # use a volume is mor efficient and speed that filesystem
+VOLUME /tmp
+EXPOSE 7280
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
 ```
 
 **Paso 3.** Crear [docker-compose.yml](docker-compose.yml) :
@@ -237,6 +245,37 @@ se ejecuta la tarea
 
 para revisar el proceso correctamente y se pode revisar logs en la opción console logs
 ![logs.png](jenkins%2Flogs.png)
+
+### PushImagen
+Para subir una imagen al repositorio de docker hub
+instalar plugin 
+
+![plugin.png](jenkins%2Fplugin.png)
+
+![plugin2.png](jenkins%2Fplugin2.png)
+
+![plugin0.png](jenkins%2Fplugin0.png)
+
+![dockerbuild.png](jenkins%2Fdockerbuild.png)
+
+En las configuraciones del jobs de jenkins
+
+![Docker Build a.png](jenkins%2FDocker%20Build%20a.png)
+
+![dockerPublishAdvance.png](jenkins%2FdockerPublishAdvance.png)
+
+Validamos que en docker hub la imagen no existe
+![dockerHUb.png](jenkins%2FdockerHUb.png)
+
+Constrimos la imagen a partir del repositorio de github
+
+![construirImagen.png](jenkins%2FconstruirImagen.png)
+
+![succesConfig.png](jenkins%2FsuccesConfig.png)
+
+Se valida la imagen creada
+![validateDockerHub.png](jenkins%2FvalidateDockerHub.png)
+
 ### Running
 
 Para acceder a los servicios utilice los siguientes endpoint
