@@ -186,7 +186,7 @@ Puedes ver -
 se utiliza la imagen de jenkins recomendada en docker hub, installando maven y gradle como gestor de depencias
 
  ```bash
-   FROM jenkins/jenkins
+FROM jenkins/jenkins
 USER root
 #Define variables
 ENV MAVEN_VERSION 3.9.2
@@ -212,11 +212,58 @@ RUN  curl -sLO https://services.gradle.org/distributions/gradle-${GRADLE_VERSION
 
 ENV  GRADLE_HOME /usr/bin/gradle
 ENV  PATH $PATH:$GRADLE_HOME/bin
+
+# Update https://stackoverflow.com/questions/38675925/is-it-possible-to-install-only-the-docker-cli-and-not-the-daemon
+
+ENV DOCKERVERSION=18.03.1-ce
+
+RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
+
+  && tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
+
+                 -C /usr/local/bin docker/docker \
+
+  && rm docker-${DOCKERVERSION}.tgz
 #Set up permissions
 RUN chown jenkins:jenkins /opt/maven;
 ENV MAVEN_HOME=/opt/mvn
 USER jenkins
    ```
+
+Para que Jekins pueda reconocer nuestra ip local como servidor de debe realizar la siguiente configuración
+
+ajustar el contenido de la linea para que quede como esta
+```bash
+ExecStart=/usr/bin/dockerd -H fd:// -H=tcp://0.0.0.0:2375
+```
+Reiniciar servicios
+
+```bash
+sudo systemctl daemon-reload
+sudo service docker restart
+```
+verificar y/o reiniciar contenedores de docker (docker ps -> ver contendores activos  docker ps -a -> ver todos)
+
+Comprobar que el api es accesible mediante el protocolo http cone l sigueinte comando o en un navegador
+```bash
+curl http://localhost:2375/images/json
+```
+
+Hacer puente entre el contenedor de jenkis y el host local para acceder al docker daemon mediante tcp
+
+```bash
+ip route show default | awk '/default/ {print $3}'
+```
+
+despues
+
+```bash
+ip a
+```
+
+buscar la red de docker 01 y usarla en lugar de localhost, en la configuracion del plugin en el pipeline deberia ser (172.17.0.1) o similar
+![ports.png](jenkins%2Fports.png)
+
 
 Se procede la configracion de contraseñas y usuarios
 
